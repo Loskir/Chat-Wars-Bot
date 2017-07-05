@@ -196,6 +196,7 @@ log_list = deque([], maxlen=30)
 lt_arena = 0
 get_info_diff = 360
 hero_message_id = 0
+report_message_id = 0
 last_captcha_id = 0
 gold_to_left = 0
 
@@ -352,6 +353,7 @@ def write_config():
 def parse_text(text, username, message_id):
     global lt_arena
     global hero_message_id
+    global report_message_id
     global bot_enabled
     global arena_enabled
     global les_enabled
@@ -470,6 +472,9 @@ def parse_text(text, username, message_id):
         elif 'В казне недостаточно' in text:
             log("Стройка не удалась, в замке нет денег")
 
+        elif 'Твои результаты в бою' in text:
+            report_message_id = message_id
+            
         elif corovan_enabled and text.find(' /go') != -1:
             action_list.append(orders['corovan'])
 
@@ -524,7 +529,7 @@ def parse_text(text, username, message_id):
                 sleep(random.randint(3, 6))
                 log('запросили репорт по битве')
                 report = False
-            if text.find('🛌Отдых') == -1 and text.find('🛡Защита ') == -1:
+            if text.find('🛌Отдых') == -1:
                 log('Чем-то занят, ждём')
             else:
                 # Подумаем, а надо ли так часто ходить куда нибудь )
@@ -931,6 +936,9 @@ def parse_text(text, username, message_id):
             elif text == '#done':
                 send_msg('@', trade_bot, '/done')
                 send_msg(pref, msg_receiver, 'Предложение готово!')
+                
+            elif text == '#report':
+                fwd(pref, msg_receiver, report_message_id)
 
 def send_msg(pref, to, message):
     sender.send_msg(pref + to, message)
