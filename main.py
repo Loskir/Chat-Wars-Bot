@@ -620,8 +620,8 @@ def parse_text(text, username, message_id):
             log('Выключаем флаг - арена закончилась')
             arena_running = False
 
-        elif quest_fight_enabled and text.find('/fight') != -1:
-            c = re.search('(\/fight.*)', text).group(1)
+        elif quest_fight_enabled and text.find('/fight_') != -1:
+            c = re.search('(\/fight_.+)', text).group(1)
             action_list.append(c)
             fwd(pref, msg_receiver, message_id)
 
@@ -671,8 +671,8 @@ def parse_text(text, username, message_id):
                 update_order(orders['gorni_fort'])
             elif text.find('🛡') != -1:
                 update_order(castle)
-            elif quest_fight_enabled and text.find('/fight') != -1:
-                c = re.search('(\/fight.*)', text).group(1)
+            elif quest_fight_enabled and text.find('/fight_') != -1:
+                c = re.search('(\/fight_.+)', text).group(1)
                 action_list.append(c)
 
         # send_msg(pref, admin_username, 'Получили команду ' + current_order['order'] + ' от ' + username)
@@ -955,6 +955,11 @@ def parse_text(text, username, message_id):
             elif text == '#done':
                 send_msg('@', trade_bot, '/done')
                 send_msg(pref, msg_receiver, 'Предложение готово!')
+                
+            elif quest_fight_enabled and text.find('/fight_') != -1:
+                c = re.search('(\/fight_.+)', text).group(1)
+                action_list.append(c)
+            
 
 def send_msg(pref, to, message):
     sender.send_msg(pref + to, message)
